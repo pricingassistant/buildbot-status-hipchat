@@ -1,6 +1,7 @@
 from buildbot.status.base import StatusReceiverMultiService
 from buildbot.status.builder import Results, SUCCESS
 import os, urllib
+import random
 
 
 class HipChatStatusPush(StatusReceiverMultiService):
@@ -26,14 +27,26 @@ class HipChatStatusPush(StatusReceiverMultiService):
     return StatusReceiverMultiService.disownServiceParent(self)
 
   def builderAdded(self, name, builder):
-    return self  # subscribe to this builder
+    return self # subscribe to this builder
 
   def buildFinished(self, builderName, build, result):
     url = self.master_status.getURLForThing(build)
     if self.localhost_replace:
       url = url.replace("//localhost", "//%s" % self.localhost_replace)
+    if result == SUCCESS:
+        hipchatMessages = ['Very Nice!', 'GOOOOAAAAAAAAAAAAAAAL!',
+                           'Success',
+                           'Wow such job, very amaze, much success',
+                           'Great success!', 'A winner is you!']
 
-    message = urllib.quote("<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper()))
+        hipchatMessage = random.choice(hipchatMessages)
+    else:
+        hipchatMessages = ['Whoopsie..', 'Failure',
+                           'My eyes! The goggles do nothing!',
+                           'Marge, can you set the oven to "cold"?',
+                           'D\'oh!']
+        hipchatMessage = random.choice(hipchatMessages)
+    message = urllib.quote("<a href='%s'>%s</a> %s" % (url, builderName, hipchatMessage))
     if result == SUCCESS:
       color = "green"
       notify = "0"

@@ -25,4 +25,10 @@ import hipchat
 c['status'].append(hipchat.HipChatStatusPush("YOUR_HIPCHAT_TOKEN", "HIPCHAT_ROOM_ID", localhost_replace="buildbot.mycompany.com"))
 ```
 
+Note
+====
+
+This script is not invoked on a buildbot reconfig, you must restart the
+buildbot master itself.
+
 Enjoy!
