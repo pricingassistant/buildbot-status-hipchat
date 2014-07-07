@@ -6,11 +6,12 @@ import os, urllib
 class HipChatStatusPush(StatusReceiverMultiService):
 
   def __init__(self, api_token, room_id, localhost_replace=False, **kwargs):
-      StatusReceiverMultiService.__init__(self)
+    StatusReceiverMultiService.__init__(self)
 
-      self.api_token = api_token
-      self.room_id = room_id
-      self.localhost_replace = localhost_replace
+    self.api_token = api_token
+    self.room_id = room_id
+    self.localhost_replace = localhost_replace
+    self.watched = []
 
   def setServiceParent(self, parent):
     StatusReceiverMultiService.setServiceParent(self, parent)
@@ -26,6 +27,7 @@ class HipChatStatusPush(StatusReceiverMultiService):
     return StatusReceiverMultiService.disownServiceParent(self)
 
   def builderAdded(self, name, builder):
+    self.watched.append(builder)
     return self  # subscribe to this builder
 
   def buildFinished(self, builderName, build, result):
