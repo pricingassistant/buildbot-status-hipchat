@@ -1,6 +1,6 @@
 from buildbot.status.base import StatusReceiverMultiService
 from buildbot.status.builder import Results, SUCCESS
-import os, urllib
+import os, urllib, json, requests
 
 
 class HipChatStatusPush(StatusReceiverMultiService):
@@ -11,6 +11,14 @@ class HipChatStatusPush(StatusReceiverMultiService):
       self.api_token = api_token
       self.room_id = room_id
       self.localhost_replace = localhost_replace
+
+  def sendNotification(self, message, color, notify):
+    client = requests.session()
+    client.headers = { "Authorization": "Bearer {api_token}".format(api_token=self.api_token),
+                       "Content-Type": "application/json" }
+    client.post('https://api.hipchat.com/v2/room/{room_id}/notification'.format(room_id=self.room_id),
+                params={"format": "json"},
+                data=json.dumps({"notify": notify, "message": message, "color": color}))
 
   def setServiceParent(self, parent):
     StatusReceiverMultiService.setServiceParent(self, parent)
@@ -33,13 +41,15 @@ class HipChatStatusPush(StatusReceiverMultiService):
     if self.localhost_replace:
       url = url.replace("//localhost", "//%s" % self.localhost_replace)
 
-    message = urllib.quote("<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper()))
+    message = "<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper())
+
+    # Valid values: yellow, green, red, purple, gray, random.
     if result == SUCCESS:
       color = "green"
-      notify = "0"
+      notify = False
     else:
       color = "red"
-      notify = "1"
+      notify = True
 
     # Yes, we are in Twisted and shouldn't do os.system :)
-    os.system('curl -d "room_id=%s&from=Buildbot&message=%s&color=%s&notify=%s" https://api.hipchat.com/v1/rooms/message?auth_token=%s&format=json' % (self.room_id, message, color, notify, self.api_token))
+    self.sendNotification(message, color, notify)
