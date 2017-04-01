@@ -29,4 +29,11 @@ import hipchat
 c['status'].append(hipchat.HipChatStatusPush("YOUR_HIPCHAT_TOKEN", "HIPCHAT_ROOM_ID", localhost_replace="buildbot.mycompany.com"))
 ```
 
+There is also a parameter `mode` which allows to filter the messages. Currently supports `all`, `passing`, `warnings`, `failing` and `exception`, their semantics is similar to the MailNotifier Status plugin.
+
+```
+import hipchat
+c['status'].append(hipchat.HipChatStatusPush("YOUR_HIPCHAT_TOKEN", "HIPCHAT_ROOM_ID", mode='failing'))
+```
+
 Enjoy!
