@@ -9,9 +9,13 @@ This plugin was created by the dev team at http://www.pricingassistant.com/ ; Co
 Install
 =======
 
-Copy hipchat.py next to your master.cfg file
+Install `requests` in your Python environment used by Buildbot
 
-Then in your master.cfg, add the following:
+```
+pip install requests
+```
+
+Copy hipchat.py next to your master.cfg file. Then in your master.cfg, add the following:
 
 ```
 import hipchat
@@ -23,6 +27,13 @@ If you Buildbot web frontend doesn't know its public address it will use "localh
 ```
 import hipchat
 c['status'].append(hipchat.HipChatStatusPush("YOUR_HIPCHAT_TOKEN", "HIPCHAT_ROOM_ID", localhost_replace="buildbot.mycompany.com"))
+```
+
+There is also a parameter `mode` which allows to filter the messages. Currently supports `all`, `passing`, `warnings`, `failing` and `exception`, their semantics is similar to the MailNotifier Status plugin.
+
+```
+import hipchat
+c['status'].append(hipchat.HipChatStatusPush("YOUR_HIPCHAT_TOKEN", "HIPCHAT_ROOM_ID", mode='failing'))
 ```
 
 Enjoy!
