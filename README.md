@@ -9,9 +9,13 @@ This plugin was created by the dev team at http://www.pricingassistant.com/ ; Co
 Install
 =======
 
-Copy hipchat.py next to your master.cfg file
+Install `requests` in your Python environment used by Buildbot
 
-Then in your master.cfg, add the following:
+```
+pip install requests
+```
+
+Copy hipchat.py next to your master.cfg file. Then in your master.cfg, add the following:
 
 ```
 import hipchat
